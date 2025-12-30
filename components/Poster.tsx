@@ -54,8 +54,8 @@ const Poster: React.FC<PosterProps> = ({ pledge, userData, innerRef, id }) => {
 
         {/* Pledge Text - Bottom Right (Masking existing text) */}
         {/* Using a red background to cover the static text on the poster */}
-        <div className="absolute top-[1050px] left-[320px] w-[680px] min-h-[200px] z-20 flex items-center justify-center p-8 bg-[#EF3E36] rounded-2xl shadow-sm">
-          <p className="text-[36px] leading-tight font-bold text-white uppercase text-center drop-shadow-md" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div className="absolute top-[1020px] left-[320px] w-[660px] min-h-[200px] z-20 flex items-center justify-start p-10 bg-[#EF3E36] rounded-3xl shadow-sm">
+          <p className="text-[55px] tracking-wider leading-tight font-black text-white uppercase text-left drop-shadow-md break-words w-full" style={{ fontFamily: 'Big Shoulders Display, sans-serif' }}>
             "{pledge.text}"
           </p>
         </div>

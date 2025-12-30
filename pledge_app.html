@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Outfit:wght@300;400;500;700;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Outfit:wght@300;400;500;700;900&family=Big+Shoulders+Display:wght@700;800;900&display=swap"
         rel="stylesheet">
     <style>
         body {
@@ -257,12 +257,12 @@
             class="transform scale-[0.35] sm:scale-[0.5] md:scale-[0.6] origin-top shadow-2xl border-[10px] border-white rounded-lg">
             <div id="posterContainer" class="w-[1080px] h-[1440px] relative overflow-hidden bg-white">
                 <!-- Background -->
-                <img src="./public/poster_2026.png" class="absolute inset-0 w-full h-full object-cover z-0">
+                <img src="./latest_poster.png" class="absolute inset-0 w-full h-full object-cover z-0">
 
                 <!-- Content -->
                 <!-- Sidebar Name -->
                 <div id="nameContainer"
-                    class="absolute top-0 left-0 w-[250px] h-full bg-white z-20 flex items-center justify-center">
+                    class="absolute top-0 left-0 w-[250px] h-full z-20 flex items-center justify-center">
                     <!-- Rotated Name - dynamically sized -->
                     <h2 id="posterName"
                         class="font-black text-[#e63946] uppercase tracking-wide leading-none whitespace-nowrap"
@@ -280,28 +280,41 @@
                 </div>
 
                 <!-- Pledge -->
-                <div
-                    class="absolute top-[1050px] left-[320px] w-[680px] min-h-[200px] z-20 flex items-center justify-center p-8 bg-[#EF3E36] rounded-2xl shadow-sm">
+                <div class="absolute z-20 flex items-center justify-start p-10 bg-[#EF3E36] rounded-3xl shadow-sm"
+                    style="top: 1020px; left: 320px; width: 660px; min-height: 200px;">
                     <p id="posterPledge"
-                        class="text-[36px] leading-tight font-bold text-white uppercase text-center drop-shadow-md"
-                        style="font-family: 'Inter', sans-serif;">
+                        class="text-[55px] tracking-wider leading-tight font-black text-white uppercase text-left drop-shadow-md break-words w-full"
+                        style="font-family: 'Big Shoulders Display', sans-serif;">
                         "My Resolution..."
                     </p>
                 </div>
 
                 <!-- Footer -->
-                <div class="absolute bottom-6 right-10 text-[12px] font-bold uppercase tracking-[0.2em] text-white/60">
+                <div class="absolute text-[12px] font-bold uppercase tracking-[0.2em] text-white/60"
+                    style="bottom: 6px; right: 10px;">
                     #2026RESOLUTION</div>
             </div>
         </div>
 
-        <div class="fixed bottom-0 left-0 w-full bg-white p-4 flex justify-center gap-4 border-t border-stone-100 z-50">
+        <div
+            class="fixed bottom-0 left-0 w-full bg-white p-4 flex flex-wrap justify-center gap-3 border-t border-stone-100 z-50">
             <button onclick="showForm()"
-                class="px-6 py-3 rounded-xl border border-stone-200 font-bold text-stone-500 hover:bg-stone-50">Edit
-                Details</button>
+                class="px-4 py-3 rounded-xl border border-stone-200 font-bold text-stone-500 hover:bg-stone-50 text-sm">Edit</button>
+
             <button onclick="downloadPoster()"
-                class="px-6 py-3 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 shadow-lg">Download
-                Poster</button>
+                class="px-4 py-3 rounded-xl bg-stone-900 text-white font-bold hover:bg-stone-800 shadow-lg text-sm flex items-center gap-2">
+                <span>Download</span>
+            </button>
+
+            <button onclick="shareToWhatsApp()"
+                class="px-4 py-3 rounded-xl bg-[#25D366] text-white font-bold hover:bg-[#20bd5a] shadow-lg text-sm flex items-center gap-2">
+                <span>WhatsApp</span>
+            </button>
+
+            <button onclick="shareToInstagram()"
+                class="px-4 py-3 rounded-xl bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white font-bold hover:opacity-90 shadow-lg text-sm flex items-center gap-2">
+                <span>Instagram</span>
+            </button>
         </div>
     </div>
 
@@ -511,15 +524,77 @@
             // Use simple print approach or redirect to image if html2canvas fails or is not preferred 
             // But user asked for download. HTML2Canvas is best for this "generated element" style.
 
-            html2canvas(poster, { scale: 2, useCORS: true }).then(canvas => {
+            html2canvas(poster, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `pledge_2025_${userData.name.replace(/\s+/g, '_')}.png`;
+                link.download = `pledge_2026_${userData.name.replace(/\s+/g, '_')}.png`;
                 link.href = canvas.toDataURL();
                 link.click();
             }).catch(err => {
                 console.error(err);
                 alert("Could not generate image. Please try screenshotting manually.");
             });
+        }
+
+        async function generatePosterBlob() {
+            const poster = document.getElementById('posterContainer');
+            const canvas = await html2canvas(poster, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+            return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        }
+
+        async function shareToWhatsApp() {
+            const message = `🎯 My New Year Resolution for 2026!\n\n"${userData.pledge}"\n\n- ${userData.name}\n\n#2026Resolution #NewYearGoals #Pledge2026`;
+
+            // Try native share first if on mobile/supported
+            try {
+                const blob = await generatePosterBlob();
+                const file = new File([blob], 'my-pledge-2026.png', { type: 'image/png' });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'My 2026 Pledge',
+                        text: message
+                    });
+                    return;
+                }
+            } catch (e) {
+                console.log("Native share not supported or failed, falling back to link", e);
+            }
+
+            // Fallback: Open WhatsApp with text
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+
+            // Also trigger download so they have the image
+            setTimeout(() => {
+                if (confirm("Opening WhatsApp... Would you like to download the poster image to share it manually?")) {
+                    downloadPoster();
+                }
+            }, 500);
+        }
+
+        async function shareToInstagram() {
+            try {
+                const blob = await generatePosterBlob();
+                const file = new File([blob], 'my-pledge-2026.png', { type: 'image/png' });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'My 2026 Pledge',
+                        text: `🎯 My 2026 Resolution: "${userData.pledge}" #2026Resolution`
+                    });
+                } else {
+                    throw new Error("Web Share API not supported for files");
+                }
+            } catch (e) {
+                console.log("Share failed", e);
+                // Fallback for Instagram (which requires the image file)
+                downloadPoster();
+                setTimeout(() => {
+                    alert("Image downloaded! \n\nTo share on Instagram:\n1. Open Instagram\n2. Create a new Story/Post\n3. Select the downloaded image!");
+                }, 500);
+            }
         }
     </script>
 </body>
