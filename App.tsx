@@ -127,21 +127,14 @@ const App: React.FC = () => {
             userData={userData}
             setUserData={setUserData}
             onBack={exitFlow}
-            onContinue={nextStep}
+            onContinue={() => {
+              setCurrentStep(Step.Success);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           />
         );
-      case Step.Preview:
-        return (
-          <CertificatePreview
-            pledge={customPledgeObject}
-            userData={userData}
-            setUserData={setUserData}
-            onBack={prevStep}
-            onConfirm={nextStep}
-          />
-        );
-      case Step.Success:
-        return <Success onReset={exitFlow} />;
+      case Step.Success: // Merged Preview and Success logic
+        return <Success onReset={exitFlow} userData={userData} />;
       default:
         return null;
     }
@@ -151,12 +144,22 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-[#fcfcfb] selection:bg-emerald-100 selection:text-emerald-900">
       <Header onCtaClick={() => startFlow()} isPledging={inFlow} onExit={exitFlow} />
 
+      {/* Hidden container for rendering the poster to canvas - ALWAYS RENDERED */}
+      <div style={{ position: 'fixed', top: '-5000px', left: '-5000px' }}>
+        {(userData.customPledge || userData.fullName) && (
+          <div id="pledge-poster-capture">
+            <Poster pledge={customPledgeObject} userData={userData} />
+          </div>
+        )}
+      </div>
+
       {!inFlow ? (
         <div className="animate-fade-in">
           <Hero onStart={() => startFlow()} slides={heroSlides} />
 
           <div className="py-12 bg-white border-b border-stone-50">
             {/* Removed FeaturedPledges */}
+
           </div>
 
           <ImpactSection />
@@ -177,15 +180,6 @@ const App: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Hidden container for rendering the poster to canvas */}
-      <div className="fixed top-[-5000px] left-[-5000px]" aria-hidden="true">
-        {userData.customPledge && (
-          <div id="capture-container">
-            <Poster pledge={customPledgeObject} userData={userData} id="pledge-poster-capture" />
-          </div>
-        )}
-      </div>
     </div>
   );
 };

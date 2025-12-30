@@ -96,8 +96,8 @@ const UserForm: React.FC<UserFormProps> = ({ userData, setUserData, onBack, onCo
     }
   };
 
-  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const validatePhone = (phone: string) => phone.length >= 8;
+  const validateEmail = (email: string) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+  const validatePhone = (phone: string) => phone.replace(/[^0-9]/g, '').length >= 10;
 
   const isFormValid =
     userData.fullName.trim().length > 2 &&
@@ -113,11 +113,11 @@ const UserForm: React.FC<UserFormProps> = ({ userData, setUserData, onBack, onCo
 
       <div className="space-y-10">
         <div className="text-center space-y-3">
-          <h2 className="text-4xl sm:text-5xl font-black text-stone-900 outfit tracking-tighter uppercase leading-none">
-            Manifestation <span className="text-emerald-600">Space</span>
+          <h2 className="text-3xl font-black text-stone-900 outfit mb-2 uppercase tracking-tight">
+            My New Year Resolution
           </h2>
-          <p className="text-stone-400 font-light text-base max-w-md mx-auto">
-            Write your affirmation or resolution for 2025. Speak it into existence.
+          <p className="text-stone-500 font-light text-base max-w-md mx-auto">
+            Fill in your details to generate your 2026 Poster.
           </p>
         </div>
 
@@ -147,7 +147,7 @@ const UserForm: React.FC<UserFormProps> = ({ userData, setUserData, onBack, onCo
                 </div>
 
                 <div className="flex space-x-4">
-                  <button onClick={() => fileInputRef.current?.click()} className="text-[10px] font-black text-emerald-600 uppercase tracking-widest border border-emerald-100 px-4 py-1.5 rounded-full hover:bg-emerald-50 transition-colors">Upload File</button>
+                  <button onClick={() => fileInputRef.current?.click()} className="text-[10px] font-black text-emerald-600 uppercase tracking-widest border border-emerald-100 px-4 py-1.5 rounded-full hover:bg-emerald-50 transition-colors">Upload Photo</button>
                   <button onClick={startCamera} className="text-[10px] font-black text-stone-500 uppercase tracking-widest border border-stone-100 px-4 py-1.5 rounded-full hover:bg-stone-50 transition-colors">Open Camera</button>
                 </div>
               </div>
@@ -166,81 +166,78 @@ const UserForm: React.FC<UserFormProps> = ({ userData, setUserData, onBack, onCo
             <input type="file" ref={fileInputRef} onChange={handlePhotoUpload} className="hidden" accept="image/*" />
           </div>
 
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-stone-500 uppercase tracking-[0.3em] outfit ml-1">Your 2025 Resolution / Affirmation</label>
-              <textarea
-                placeholder="I am..."
-                value={userData.customPledge || ''}
-                onChange={(e) => setUserData(prev => ({ ...prev, customPledge: e.target.value }))}
-                className="w-full px-5 py-3.5 bg-stone-50 border border-stone-100 rounded-xl focus:ring-4 focus:ring-emerald-50/50 focus:border-emerald-500 outline-none transition-all font-medium text-stone-800 min-h-[100px] resize-none"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-stone-500 uppercase tracking-[0.3em] outfit ml-1">Full Legal Name</label>
+          <div className="space-y-4">
+            <div>
+              <label className="text-xs font-bold text-stone-400 uppercase tracking-widest block mb-1 ml-1">Full Name</label>
               <input
                 type="text"
-                placeholder="e.g. Alexander Knight"
+                placeholder="e.g. John Doe"
+                maxLength={13}
                 value={userData.fullName}
                 onChange={(e) => setUserData(prev => ({ ...prev, fullName: e.target.value }))}
-                className="w-full px-5 py-3.5 bg-stone-50 border border-stone-100 rounded-xl focus:ring-4 focus:ring-emerald-50/50 focus:border-emerald-500 outline-none transition-all font-medium text-stone-800"
+                className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-medium text-stone-800"
               />
+              <p className={`text-xs mt-1 text-right ${userData.fullName.length >= 12 ? 'text-orange-500' : 'text-stone-400'}`}>
+                {userData.fullName.length} / 13
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-stone-500 uppercase tracking-[0.3em] outfit ml-1">Email ID</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs font-bold text-stone-400 uppercase tracking-widest block mb-1 ml-1">Email</label>
                 <input
                   type="email"
-                  placeholder="alex@domain.com"
+                  placeholder="alex@example.com"
                   value={userData.email}
                   onChange={(e) => setUserData(prev => ({ ...prev, email: e.target.value }))}
-                  className={`w-full px-5 py-3.5 bg-stone-50 border rounded-xl focus:ring-4 focus:ring-emerald-50/50 outline-none transition-all font-medium text-stone-800 ${userData.email && !validateEmail(userData.email) ? 'border-red-200' : 'border-stone-100 focus:border-emerald-500'
-                    }`}
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-medium text-stone-800"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-stone-500 uppercase tracking-[0.3em] outfit ml-1">Phone Number</label>
+              <div>
+                <label className="text-xs font-bold text-stone-400 uppercase tracking-widest block mb-1 ml-1">WhatsApp Number</label>
                 <input
                   type="tel"
-                  placeholder="+1 555 123 4567"
+                  placeholder="+91 98765 43210"
                   value={userData.phone}
                   onChange={(e) => setUserData(prev => ({ ...prev, phone: e.target.value }))}
-                  className="w-full px-5 py-3.5 bg-stone-50 border border-stone-100 rounded-xl focus:ring-4 focus:ring-emerald-50/50 focus:border-emerald-500 outline-none transition-all font-medium text-stone-800"
+                  className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-medium text-stone-800"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-stone-400 uppercase tracking-widest block mb-1 ml-1">My New Year Resolution</label>
+              <p className="text-xs text-stone-400 mb-2 ml-1">Maximum 120 characters</p>
+              <textarea
+                placeholder="I will..."
+                maxLength={120}
+                value={userData.customPledge || ''}
+                onChange={(e) => setUserData(prev => ({ ...prev, customPledge: e.target.value }))}
+                className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-medium text-stone-800 min-h-[100px] resize-none"
+              />
+              <p className={`text-xs mt-1 text-right ${(userData.customPledge || '').length >= 110 ? 'text-orange-500' : 'text-stone-400'}`}>
+                {(userData.customPledge || '').length} / 120
+              </p>
             </div>
           </div>
 
-          <div className="pt-6 border-t border-stone-50 flex flex-col space-y-6">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={onBack}
-                className="text-[10px] font-black text-stone-400 hover:text-stone-900 uppercase tracking-widest transition-colors flex items-center space-x-1"
-              >
-                <span>← Back</span>
-              </button>
-              <button
-                onClick={handleClearAll}
-                className="text-[10px] font-black text-stone-300 hover:text-red-500 uppercase tracking-widest transition-colors flex items-center space-x-1"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                <span>Clear Everything</span>
-              </button>
-            </div>
+          <div className="pt-4 flex justify-between items-center border-none">
+            <button
+              onClick={onBack}
+              className="text-xs font-bold text-stone-400 hover:text-stone-800 uppercase"
+            >
+              ← CANCEL
+            </button>
 
             <button
               disabled={!isFormValid}
               onClick={onContinue}
-              className={`w-full py-5 rounded-2xl font-black outfit text-lg transition-all transform shadow-lg active:scale-95 ${isFormValid
+              className={`px-8 py-3 rounded-xl font-bold transition-all shadow-lg transform active:scale-95 ${isFormValid
                 ? 'bg-stone-900 text-white hover:bg-emerald-600 shadow-stone-200'
-                : 'bg-stone-100 text-stone-300 cursor-not-allowed shadow-none'
+                : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                 }`}
             >
-              {isFormValid ? 'Manifest My 2025' : 'Complete All Fields to Sign'}
+              Visualize 2025 →
             </button>
           </div>
         </div>

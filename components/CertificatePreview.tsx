@@ -32,21 +32,21 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({ pledge, userDat
   return (
     <div className="flex-1 flex flex-col p-6 sm:p-10 space-y-10 bg-white/50 h-full max-w-4xl mx-auto w-full">
       <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold text-stone-900 outfit tracking-tight">Preview Your Affirmation</h2>
-        <p className="text-stone-500 font-light">Confirm your details before manifesting.</p>
+        <h2 className="text-3xl font-black text-stone-900 outfit tracking-tight">Your 2025 Pledge</h2>
+        <p className="text-emerald-600 font-medium">Confirm your details before generating.</p>
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center">
-        <div ref={containerRef} className="relative group w-full max-w-sm mx-auto overflow-hidden rounded-[2.5rem] shadow-2xl ring-4 ring-white aspect-[1080/1350] bg-white">
+        <div ref={containerRef} className="relative group w-full max-w-sm mx-auto shadow-2xl ring-4 ring-white aspect-[1080/1440] bg-white">
           <div
-            className="origin-top-left"
             style={{
-              transform: `scale(${scale})`,
-              width: '1080px',
-              height: '1350px',
+              transform: `scale(${scale})`, // Shrink it down
+              transformOrigin: 'top left',  // Anchor to corner
+              width: '1080px',              // Force original size inner
+              height: '1440px'
             }}
           >
-            <Poster pledge={pledge} userData={userData} id="pledge-poster-preview" />
+            <Poster pledge={pledge} userData={userData} />
           </div>
         </div>
       </div>
@@ -54,13 +54,13 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({ pledge, userDat
       <div className="flex flex-col space-y-4 pt-6 border-t border-stone-100">
         <button
           onClick={onConfirm}
-          className="w-full bg-stone-900 text-white font-black py-5 rounded-[1.5rem] transition-all duration-300 hover:bg-emerald-600 shadow-xl shadow-stone-100 active:scale-95 outfit text-lg"
+          className="w-full bg-stone-900 text-white font-bold py-5 rounded-xl transition-all duration-300 hover:bg-emerald-600 shadow-xl shadow-stone-100 active:scale-95 outfit text-lg"
         >
           Confirm & Finalize
         </button>
         <button
           onClick={onBack}
-          className="text-stone-400 font-bold text-xs uppercase tracking-widest hover:text-stone-600 transition-colors"
+          className="text-stone-400 font-bold text-xs uppercase tracking-widest hover:text-stone-600 transition-colors pt-2"
         >
           Modify Details
         </button>
