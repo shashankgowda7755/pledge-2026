@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { GoogleGenAI } from "@google/genai";
+import React, { useState, useMemo } from 'react';
 import { Step, Pledge, UserData } from './types';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -14,7 +13,6 @@ import MissionSection from './components/MissionSection';
 const App: React.FC = () => {
   const [inFlow, setInFlow] = useState(false);
   const [currentStep, setCurrentStep] = useState<Step>(Step.Form);
-  const [images, setImages] = useState<Record<string, string>>({});
   const [userData, setUserData] = useState<UserData>({
     fullName: '',
     email: '',
@@ -22,70 +20,38 @@ const App: React.FC = () => {
     photo: ''
   });
 
-  useEffect(() => {
-    const generateAllImages = async () => {
-      try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        const prompts = [
-          { id: 'main', text: 'Minimalist golden sunrise over mountains, soft warm light, hopeful atmosphere, 8k, inspirational.' },
-          { id: 'environment', text: 'Abstract visual representation of determination, glowing golden lines climbing upward, dark background, 8k.' },
-          { id: 'health', text: 'Peaceful zen garden with soft morning mist, balance stones, golden light transparency, 8k.' },
-          { id: 'lifestyle', text: 'Open notebook with a fountain pen on a wooden desk, warm sunlight, coffee cup, inviting creative space, 8k.' },
-          { id: 'unity', text: 'Glowing constellations connecting in the night sky, golden threads of destiny, hopeful and vast, 8k.' }
-        ];
-        const generatedImages: Record<string, string> = {};
-        await Promise.all(prompts.map(async (p) => {
-          try {
-            const response = await ai.models.generateContent({
-              model: 'gemini-2.5-flash-image',
-              contents: { parts: [{ text: p.text }] },
-              config: { imageConfig: { aspectRatio: "16:9" } }
-            });
-            for (const part of response.candidates?.[0]?.content?.parts || []) {
-              if (part.inlineData) {
-                generatedImages[p.id] = `data:image/png;base64,${part.inlineData.data}`;
-              }
-            }
-          } catch (e) { console.error(e); }
-        }));
-        setImages(generatedImages);
-      } catch (err) { console.error(err); }
-    };
-    generateAllImages();
-  }, []);
-
   const heroSlides = useMemo(() => [
     {
-      image: images.main || null,
+      image: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&q=80&w=2000",
       title1: "Dream It.",
       title2: "Claim It.",
       subtitle: "The most powerful year of your life starts with a single, clear intention."
     },
     {
-      image: images.environment || null,
+      image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&q=80&w=2000",
       title1: "Manifest.",
       title2: "Achieve.",
       subtitle: "Turn your deepest desires into reality by speaking them into existence."
     },
     {
-      image: images.health || null,
+      image: "https://images.unsplash.com/photo-1544367563-12123d8965cd?auto=format&fit=crop&q=80&w=2000",
       title1: "Inner Peace.",
       title2: "Mental Clarity.",
       subtitle: "Affirm your worth and find the balance your mind and soul deserve."
     },
     {
-      image: images.lifestyle || null,
+      image: "https://images.unsplash.com/photo-1499750310159-5bcf844a95e6?auto=format&fit=crop&q=80&w=2000",
       title1: "Write Your",
       title2: "Future.",
       subtitle: "Your words shape your world. Define your 2025 story today."
     },
     {
-      image: images.unity || null,
+      image: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&q=80&w=2000",
       title1: "Believe in",
       title2: "Yourself.",
       subtitle: "Join thousands of others committing to a year of growth and positivity."
     }
-  ], [images]);
+  ], []);
 
   const startFlow = () => {
     setInFlow(true);
