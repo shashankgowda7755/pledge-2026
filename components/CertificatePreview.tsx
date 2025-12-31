@@ -2,6 +2,30 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Pledge, UserData } from '../types';
 import Poster from './Poster';
 
+// Google Sheets Web App URL
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxnc_VlsezobFWwCrm8p3CEGc2JytrBbbEYhBY9T90pQeR12VHeHhcUsEyoQMqLCIFW/exec';
+
+// Function to save data to Google Sheets
+const saveToGoogleSheets = async (userData: UserData) => {
+  try {
+    await fetch(GOOGLE_SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors', // Required for Google Apps Script
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fullName: userData.fullName,
+        phone: userData.phone,
+        resolution: userData.customPledge || '',
+      }),
+    });
+    console.log('Data sent to Google Sheets');
+  } catch (error) {
+    console.error('Error saving to Google Sheets:', error);
+  }
+};
+
 interface CertificatePreviewProps {
   pledge: Pledge;
   userData: UserData;
@@ -29,6 +53,15 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({ pledge, userDat
     return () => window.removeEventListener('resize', updateScale);
   }, []);
 
+  const handleConfirm = () => {
+    // NON-BLOCKING SAVE: Send data to Google Sheets
+    // We proceed immediately without waiting for the network request
+    saveToGoogleSheets(userData);
+
+    // Proceed immediately to success screen
+    onConfirm();
+  };
+
   return (
     <div className="flex-1 flex flex-col p-6 sm:p-10 space-y-10 bg-white/50 h-full max-w-4xl mx-auto w-full">
       <div className="text-center space-y-2">
@@ -53,7 +86,7 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({ pledge, userDat
 
       <div className="flex flex-col space-y-4 pt-6 border-t border-stone-100">
         <button
-          onClick={onConfirm}
+          onClick={handleConfirm}
           className="w-full bg-stone-900 text-white font-bold py-5 rounded-xl transition-all duration-300 hover:bg-emerald-600 shadow-xl shadow-stone-100 active:scale-95 outfit text-lg"
         >
           Confirm & Finalize
