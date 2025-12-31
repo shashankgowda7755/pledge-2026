@@ -2,22 +2,42 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Pledge, UserData } from '../types';
 import Poster from './Poster';
 
-// Google Sheets Web App URL
-const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxnc_VlsezobFWwCrm8p3CEGc2JytrBbbEYhBY9T90pQeR12VHeHhcUsEyoQMqLCIFW/exec';
+// Function to save data to LocalStorage (Browser Memory)
+const saveLocally = (userData: UserData) => {
+  try {
+    // 1. Get existing data
+    const existingData = localStorage.getItem('pledge_submissions');
+    const submissions = existingData ? JSON.parse(existingData) : [];
 
-// Function to save data to Google Sheets using URL parameters (reliable method)
-const saveToGoogleSheets = (userData: UserData) => {
-  const params = new URLSearchParams({
-    fullName: userData.fullName || '',
-    phone: userData.phone || '',
-    resolution: userData.customPledge || '',
-  });
+    // 2. Add new submission
+    const newSubmission = {
+      timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+      fullName: userData.fullName || '',
+      phone: userData.phone || '',
+      resolution: userData.customPledge || '',
+    };
 
-  // Create a hidden image to send data (works around CORS)
-  const img = new Image();
-  img.src = `${GOOGLE_SHEETS_URL}?${params.toString()}`;
+    submissions.push(newSubmission);
 
-  console.log('Data sent to Google Sheets via URL params');
+    // 3. Save back to memory
+    localStorage.setItem('pledge_submissions', JSON.stringify(submissions));
+
+    console.log('Data saved locally! Total entries:', submissions.length);
+  } catch (error) {
+    console.error('Error saving locally:', error);
+  }
+};
+
+// HELPER: Run this in console to download data: downloadJSON()
+(window as any).downloadJSON = () => {
+  const data = localStorage.getItem('pledge_submissions');
+  if (!data) return alert('No data found!');
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'pledge_data.json';
+  a.click();
 };
 
 interface CertificatePreviewProps {
@@ -48,11 +68,10 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({ pledge, userDat
   }, []);
 
   const handleConfirm = () => {
-    // NON-BLOCKING SAVE: Send data to Google Sheets
-    // We proceed immediately without waiting for the network request
-    saveToGoogleSheets(userData);
+    // Save to Local Memory
+    saveLocally(userData);
 
-    // Proceed immediately to success screen
+    // Proceed immediately
     onConfirm();
   };
 
