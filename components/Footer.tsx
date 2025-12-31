@@ -37,13 +37,6 @@ const Footer: React.FC = () => {
 
       <div className="max-w-7xl mx-auto pt-20 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 text-stone-300 text-[10px] font-bold uppercase tracking-[0.4em]">
         <p>© 2025 Pledge Foundation. All Rights Reserved.</p>
-        <button
-          onClick={() => (window as any).downloadJSON?.()}
-          className="hover:text-emerald-500 cursor-pointer transition-colors"
-          title="Download collected data"
-        >
-          ● ADMIN: DOWNLOAD DATA ●
-        </button>
         <div className="flex space-x-6">
           <a href="#" className="hover:text-emerald-600">Twitter</a>
           <a href="#" className="hover:text-emerald-600">Instagram</a>
