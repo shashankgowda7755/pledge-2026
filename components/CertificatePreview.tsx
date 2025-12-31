@@ -5,25 +5,19 @@ import Poster from './Poster';
 // Google Sheets Web App URL
 const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxnc_VlsezobFWwCrm8p3CEGc2JytrBbbEYhBY9T90pQeR12VHeHhcUsEyoQMqLCIFW/exec';
 
-// Function to save data to Google Sheets
-const saveToGoogleSheets = async (userData: UserData) => {
-  try {
-    await fetch(GOOGLE_SHEETS_URL, {
-      method: 'POST',
-      mode: 'no-cors', // Required for Google Apps Script
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        fullName: userData.fullName,
-        phone: userData.phone,
-        resolution: userData.customPledge || '',
-      }),
-    });
-    console.log('Data sent to Google Sheets');
-  } catch (error) {
-    console.error('Error saving to Google Sheets:', error);
-  }
+// Function to save data to Google Sheets using URL parameters (reliable method)
+const saveToGoogleSheets = (userData: UserData) => {
+  const params = new URLSearchParams({
+    fullName: userData.fullName || '',
+    phone: userData.phone || '',
+    resolution: userData.customPledge || '',
+  });
+
+  // Create a hidden image to send data (works around CORS)
+  const img = new Image();
+  img.src = `${GOOGLE_SHEETS_URL}?${params.toString()}`;
+
+  console.log('Data sent to Google Sheets via URL params');
 };
 
 interface CertificatePreviewProps {
