@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { UserData, Pledge } from '../types';
+import PrivacyModal from './PrivacyModal';
 
 interface UserFormProps {
   userData: UserData;
@@ -13,6 +14,8 @@ const UserForm: React.FC<UserFormProps> = ({ userData, setUserData, onBack, onCo
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [showCamera, setShowCamera] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
 
   // Fix: Use useEffect to attach stream when video element becomes available
@@ -103,6 +106,7 @@ const UserForm: React.FC<UserFormProps> = ({ userData, setUserData, onBack, onCo
     userData.fullName.trim().length > 2 &&
     validateEmail(userData.email) &&
     validatePhone(userData.phone) &&
+    agreed &&
     (userData.customPledge?.trim().length ?? 0) > 5;
 
   return (
@@ -220,6 +224,16 @@ const UserForm: React.FC<UserFormProps> = ({ userData, setUserData, onBack, onCo
               </p>
             </div>
           </div>
+
+          <label className="flex items-start space-x-3 text-xs text-stone-500 leading-relaxed">
+            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5" />
+            <span>
+              I am 18 or older, or I have a parent/guardian's permission, and I have read the{' '}
+              <a href="#privacy" onClick={(e) => { e.preventDefault(); setShowPrivacy(true); }} className="text-emerald-600 underline">Privacy Policy</a>.
+              My photo and details stay in my browser to make my poster.
+            </span>
+          </label>
+          {showPrivacy && <PrivacyModal onClose={() => setShowPrivacy(false)} />}
 
           <div className="pt-4 flex justify-between items-center border-none">
             <button

@@ -1,7 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import PrivacyModal from './PrivacyModal';
 
 const Footer: React.FC = () => {
+  const [showPrivacy, setShowPrivacy] = useState(false);
   return (
     <footer className="bg-stone-50 pt-20 pb-12 px-6 border-t border-stone-100">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -28,7 +30,7 @@ const Footer: React.FC = () => {
         <div className="space-y-4">
           <h4 className="font-bold text-xs uppercase tracking-widest text-stone-800">Support</h4>
           <ul className="text-stone-400 text-sm space-y-3">
-            <li><a href="#" className="hover:text-emerald-600 transition-colors">Privacy Policy</a></li>
+            <li><a href="#privacy" onClick={(e) => { e.preventDefault(); setShowPrivacy(true); }} className="hover:text-emerald-600 transition-colors">Privacy Policy</a></li>
             <li><a href="#" className="hover:text-emerald-600 transition-colors">Contact Us</a></li>
             <li><a href="#" className="hover:text-emerald-600 transition-colors">Help Center</a></li>
           </ul>
@@ -43,6 +45,7 @@ const Footer: React.FC = () => {
           <a href="#" className="hover:text-emerald-600">LinkedIn</a>
         </div>
       </div>
+      {showPrivacy && <PrivacyModal onClose={() => setShowPrivacy(false)} />}
     </footer>
   );
 };

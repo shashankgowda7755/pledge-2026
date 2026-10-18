@@ -71,3 +71,7 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const SHARE_CAPTION = "I have taken my pledge even you start taking now. Join me in shaping a better 2025! 👇";
+
+// Contact for privacy / grievance requests (DPDP Act 2023, IT Rules 2021).
+// Set to the organisation's own domain inbox. Line is hidden while empty.
+export const PRIVACY_CONTACT_EMAIL = '';
